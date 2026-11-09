@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Travel Agent//Japan NYE 2026//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:japan-nye-2026-0@travel-agent
+DTSTAMP:20261109T081255Z
+DTSTART:20261201T020000Z
+DTEND:20261201T023000Z
+SUMMARY:Japan trip: check B-PUMP Dec calendar + Aman Jan menu
+DESCRIPTION:B-PUMP Tokyo (Akihabara) Instagram: is it open Dec 30 (last year 11:00-19:00)? Also check if Aman Tokyo Lounge has posted its January afternoon tea on TableCheck (tablecheck.com/en/shops/amantokyo-thelounge/reserve) - book Jan 1 12:30 for 2 if no reply to your email.
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:PT0M
+DESCRIPTION:Japan trip: check B-PUMP Dec calendar + Aman Jan menu
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:japan-nye-2026-1@travel-agent
+DTSTAMP:20261109T081255Z
+DTSTART:20261202T004500Z
+DTEND:20261202T011500Z
+SUMMARY:Buy train tickets for JAN 2: Ueno -> Naganohara-Kusatsuguchi
+DESCRIPTION:Tickets for Jan 2 travel go on sale TODAY (Dec 2) at 10:00 Japan time = 09:00 HK time\, one month ahead. Limited Express Kusatsu-Shima from Ueno around noon. Book on JR East Eki-net (eki-net.com) or JR-EAST Train Reservation (english).
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:PT0M
+DESCRIPTION:Buy train tickets for JAN 2: Ueno -> Naganohara-Kusatsuguchi
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:japan-nye-2026-2@travel-agent
+DTSTAMP:20261109T081255Z
+DTSTART:20261204T004500Z
+DTEND:20261204T011500Z
+SUMMARY:Buy return tickets for JAN 4: Karuizawa -> Tokyo
+DESCRIPTION:Tickets for Jan 4 go on sale today at 10:00 Japan time = 09:00 HK time. Bus Kusatsu -> Karuizawa\, then Hokuriku Shinkansen to Tokyo\; time it for the evening flight.
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:PT0M
+DESCRIPTION:Buy return tickets for JAN 4: Karuizawa -> Tokyo
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:japan-nye-2026-3@travel-agent
+DTSTAMP:20261109T081255Z
+DTSTART:20261210T020000Z
+DTEND:20261210T023000Z
+SUMMARY:Aman Tokyo Jan 1 tea - confirmed?
+DESCRIPTION:If Aman hasn't replied to the email (amantokyo.fbres@aman.com / +81 3-5224-3339)\, book online on TableCheck now that the January menu should be up.
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:PT0M
+DESCRIPTION:Aman Tokyo Jan 1 tea - confirmed?
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:japan-nye-2026-4@travel-agent
+DTSTAMP:20261109T081255Z
+DTSTART:20261220T020000Z
+DTEND:20261220T023000Z
+SUMMARY:Japan trip: re-check New Year hours
+DESCRIPTION:Kikanbo (kikanbo.co.jp/blogs/news)\, Ginza Hachigo (X @ginza_hachigou)\, Ramen-ya Shima (IG @ramenya_shima)\, Butagumi news page\, Toraya Akasaka\, Sakurai tea\, Hama-rikyu Jan 2 programme\, Meiji Jingu.
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:PT0M
+DESCRIPTION:Japan trip: re-check New Year hours
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:japan-nye-2026-5@travel-agent
+DTSTAMP:20261109T081255Z
+DTSTART:20261224T020000Z
+DTEND:20261224T023000Z
+SUMMARY:Kei Kusatsu: last days of free cancellation
+DESCRIPTION:Ref 202611080004891. Cancellation fee 20% from 7 days before (from ~Dec 26)\, 30% from 3 days\, 50% from 1 day\, 100% same day.
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:PT0M
+DESCRIPTION:Kei Kusatsu: last days of free cancellation
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:japan-nye-2026-6@travel-agent
+DTSTAMP:20261109T081255Z
+DTSTART:20261229T225500Z
+DTEND:20261229T232500Z
+SUMMARY:Book Ramen-ya Shima for tomorrow (opens 8:00 JST)
+DESCRIPTION:TableCheck: tablecheck.com/shops/ramenya-shima/reserve - next-day slots open at 8:00 Japan time. Book Dec 31 morning for 2. Cash only.
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:PT0M
+DESCRIPTION:Book Ramen-ya Shima for tomorrow (opens 8:00 JST)
+END:VALARM
+END:VEVENT
+END:VCALENDAR

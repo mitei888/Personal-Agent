@@ -1,0 +1,33 @@
+# Reminders sent to Miranda's Discord DM by tools/remind.py (checked every 15 min).
+# Fields: id (unique, never reuse), at ("YYYY-MM-DD HH:MM"), tz (default Asia/Hong_Kong), text.
+# Optional: repeat: daily | weekly | monthly
+# Past entries are kept; .reminders_state.json records what has been sent.
+
+- id: japan-bpump-aman-check
+  at: "2026-12-01 10:00"
+  text: "🧗 Japan: check B-PUMP Akihabara's December calendar (open Dec 30?) and whether Aman Tokyo Lounge has posted its January afternoon tea on TableCheck."
+
+- id: japan-train-jan2
+  at: "2026-12-02 08:45"
+  text: "🚆 Train tickets for JAN 2 (Ueno → Naganohara-Kusatsuguchi, limited express ~noon) go on sale at 09:00 HK / 10:00 Japan today. Eki-net / JR-EAST Train Reservation."
+
+- id: japan-train-jan4
+  at: "2026-12-04 08:45"
+  text: "🚄 Return tickets for JAN 4 (Karuizawa → Tokyo, Hokuriku Shinkansen) go on sale at 09:00 HK / 10:00 Japan today."
+
+- id: japan-aman-confirm
+  at: "2026-12-10 10:00"
+  text: "🍰 Aman Tokyo Jan 1 12:30 afternoon tea: has Aman replied (amantokyo.fbres@aman.com)? If not, book on TableCheck now."
+
+- id: japan-ny-hours
+  at: "2026-12-20 10:00"
+  text: "📋 Re-check New Year hours: Kikanbo, Ginza Hachigo, Ramen-ya Shima, Butagumi, Toraya Akasaka, Hama-rikyu Jan 2 programme."
+
+- id: japan-kei-cancel
+  at: "2026-12-24 10:00"
+  text: "♨️ Kei Kusatsu (ref 202611080004891): last days of free cancellation — 20% fee from ~Dec 26."
+
+- id: japan-shima
+  at: "2026-12-30 07:55"
+  tz: Asia/Tokyo
+  text: "🍜 Book Ramen-ya Shima for tomorrow — next-day slots open at 08:00 Japan time on TableCheck. Cash only."

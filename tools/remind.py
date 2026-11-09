@@ -1,0 +1,278 @@
+#!/usr/bin/env python3
+"""Personal Agent reminders + nightly briefing, delivered to Miranda's Discord DM.
+
+Run every 15 min by launchd (tools/com.personalagent.remind.plist).
+  remind.py              send due reminders; send the 9 pm briefing once per night
+  remind.py --dry-run    print what would be sent, send nothing
+  remind.py --briefing   send tomorrow's briefing now (preview)
+  remind.py --test       send a one-off test DM
+
+Config is read from (later files don't override earlier ones):
+  environment, <root>/.agent.env, <root>/.env, ~/.claude/channels/discord/.env
+  DISCORD_BOT_TOKEN (or discord_token), DISCORD_USER_ID
+  Calendars: any key ending in _cal / _CAL or of the form GCAL_<NAME>_ICS holding a
+  Google "secret address in iCal format" URL. The label is taken from the key name.
+"""
+import calendar, json, os, re, sys, urllib.request, urllib.error
+from datetime import datetime, date, time, timedelta
+from pathlib import Path
+from zoneinfo import ZoneInfo
+import yaml
+
+ROOT = Path(__file__).resolve().parent.parent
+REMINDERS = ROOT / "reminders.yaml"
+TRIPS = ROOT / "Travel_Agent" / "trips.yaml"
+STATE = ROOT / ".reminders_state.json"
+LOG = ROOT / "tools" / "remind.log"
+HOME_TZ = "Asia/Hong_Kong"
+BRIEFING_HOUR = 21          # 9 pm local
+API = "https://discord.com/api/v10"
+
+
+# ---------- config ----------
+def read_env(path):
+    out = {}
+    try:
+        for line in Path(path).expanduser().read_text().splitlines():
+            m = re.match(r"\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*['\"]?(\S+?)['\"]?\s*$", line)
+            if m:
+                out[m.group(1)] = m.group(2)
+    except FileNotFoundError:
+        pass
+    return out
+
+
+def load_config():
+    cfg = {}
+    for src in (ROOT / ".agent.env", ROOT / ".env", Path("~/.claude/channels/discord/.env")):
+        for k, v in read_env(src).items():
+            cfg.setdefault(k, v)
+    for k, v in os.environ.items():
+        if k.startswith(("DISCORD_", "GCAL_")):
+            cfg[k] = v
+    return cfg
+
+
+def discord_creds(cfg):
+    token = cfg.get("DISCORD_BOT_TOKEN") or cfg.get("discord_token")
+    user = cfg.get("DISCORD_USER_ID")
+    if not token or not user:
+        sys.exit("Missing Discord bot token or DISCORD_USER_ID")
+    return token, user
+
+
+def calendars(cfg):
+    cals = []
+    for k, v in cfg.items():
+        m = re.fullmatch(r"GCAL_(\w+)_ICS", k) or re.fullmatch(r"(\w+?)_cal", k, re.I)
+        if m and v.startswith("https://"):
+            cals.append((m.group(1).replace("_", " ").title(), v))
+    return sorted(cals)
+
+
+# ---------- discord ----------
+def discord(token, method, path, body):
+    req = urllib.request.Request(API + path, method=method, data=json.dumps(body).encode(),
+                                 headers={"Authorization": f"Bot {token}", "Content-Type": "application/json",
+                                          "User-Agent": "PersonalAgentReminder (local, 1.0)"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return json.loads(r.read() or b"{}")
+
+
+def send_dm(token, user, text):
+    ch = discord(token, "POST", "/users/@me/channels", {"recipient_id": user})
+    while text:  # Discord limit 2000 chars; split on line breaks
+        chunk = text[:1990]
+        if len(text) > 1990 and "\n" in chunk:
+            chunk = chunk[:chunk.rfind("\n")]
+        discord(token, "POST", f"/channels/{ch['id']}/messages", {"content": chunk})
+        text = text[len(chunk):].lstrip("\n")
+
+
+# ---------- reminders ----------
+def reminder_time(r):
+    tz = ZoneInfo(r.get("tz", HOME_TZ))
+    return datetime.strptime(str(r["at"]), "%Y-%m-%d %H:%M").replace(tzinfo=tz)
+
+
+def next_after(r, t):
+    rep = r.get("repeat")
+    if rep == "daily":
+        return t + timedelta(days=1)
+    if rep == "weekly":
+        return t + timedelta(weeks=1)
+    if rep == "monthly":
+        y, m = (t.year + (t.month == 12), t.month % 12 + 1)
+        day = min(int(str(r["at"])[8:10]), calendar.monthrange(y, m)[1])
+        return t.replace(year=y, month=m, day=day)
+    return None
+
+
+def occurrence_due(r, now):
+    """Latest scheduled occurrence <= now, or None."""
+    t = reminder_time(r)
+    if t > now:
+        return None
+    while True:
+        nxt = next_after(r, t)
+        if nxt is None or nxt > now:
+            return t
+        t = nxt
+
+
+def occurrences_between(r, start, end):
+    t = reminder_time(r)
+    out = []
+    while t < end:
+        if t >= start:
+            out.append(t)
+        t = next_after(r, t)
+        if t is None:
+            break
+    return out
+
+
+# ---------- briefing ----------
+def local_tz(d):
+    """Time zone to use on date d: the trip's tz if travelling, else home."""
+    try:
+        for trip in yaml.safe_load(TRIPS.read_text()) or []:
+            if trip.get("tz") and str(trip["start"]) <= d.isoformat() <= str(trip["end"]):
+                return ZoneInfo(trip["tz"])
+    except FileNotFoundError:
+        pass
+    return ZoneInfo(HOME_TZ)
+
+
+def trips_on(d):
+    try:
+        return [t for t in (yaml.safe_load(TRIPS.read_text()) or [])
+                if str(t["start"]) <= d.isoformat() <= str(t["end"])]
+    except FileNotFoundError:
+        return []
+
+
+def fetch_events(cals, day, tz):
+    import icalendar, recurring_ical_events
+    start = datetime.combine(day, time(0), tz)
+    end = start + timedelta(days=1)
+    out, errors = [], []
+    for label, url in cals:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "PersonalAgent/1.0"})
+            cal = icalendar.Calendar.from_ical(urllib.request.urlopen(req, timeout=30).read())
+            for ev in recurring_ical_events.of(cal).between(start, end):
+                if str(ev.get("STATUS", "")).upper() == "CANCELLED":
+                    continue
+                s = ev.decoded("DTSTART")
+                e = ev.decoded("DTEND") if ev.get("DTEND") else None
+                allday = not isinstance(s, datetime)
+                if not allday:
+                    s = s.astimezone(tz) if s.tzinfo else s.replace(tzinfo=tz)
+                    e = (e.astimezone(tz) if e.tzinfo else e.replace(tzinfo=tz)) if isinstance(e, datetime) else None
+                title = str(ev.get("SUMMARY", "(no title)")).strip()
+                loc = str(ev.get("LOCATION", "")).strip().split("\n")[0]
+                out.append(dict(cal=label, allday=allday, start=s, end=e, title=title, loc=loc))
+        except Exception as ex:
+            errors.append(f"{label} calendar unavailable ({type(ex).__name__})")
+    return out, errors
+
+
+def build_briefing(day, cfg):
+    tz = local_tz(day)
+    events, errors = fetch_events(calendars(cfg), day, tz)
+    lines = [f"🌙 **Tomorrow — {day:%a %-d %b}**" + ("" if tz.key == HOME_TZ else f"  _(times in {tz.key.split('/')[-1]})_")]
+    for t in trips_on(day):
+        lines.append(f"✈️ {t['name']}")
+    by_cal = {}
+    for ev in events:
+        by_cal.setdefault(ev["cal"], []).append(ev)
+    for label in sorted(by_cal):
+        lines.append(f"\n**{label}**")
+        for ev in sorted(by_cal[label], key=lambda e: (not e["allday"], e["start"] if not e["allday"] else datetime.min.replace(tzinfo=tz))):
+            if ev["allday"]:
+                when = "All day"
+            else:
+                when = f"{ev['start']:%H:%M}" + (f"–{ev['end']:%H:%M}" if ev["end"] else "")
+            loc = f" · {ev['loc'][:40]}" if ev["loc"] else ""
+            lines.append(f"• {when}  {ev['title'][:80]}{loc}")
+    # reminders due tomorrow
+    start = datetime.combine(day, time(0), tz)
+    end = start + timedelta(days=1)
+    rems = []
+    for r in yaml.safe_load(REMINDERS.read_text()) or []:
+        for occ in occurrences_between(r, start, end):
+            rems.append((occ.astimezone(tz), r["text"]))
+    if rems:
+        lines.append("\n**⏰ Reminders**")
+        for t, text in sorted(rems):
+            lines.append(f"• {t:%H:%M}  {text}")
+    if not events and not rems:
+        lines.append("\nNothing scheduled — enjoy a free day ✨")
+    for e in errors:
+        lines.append(f"\n⚠️ {e}")
+    return "\n".join(lines)
+
+
+# ---------- main ----------
+def log(msg):
+    with open(LOG, "a") as f:
+        f.write(f"{datetime.now().isoformat(timespec='seconds')} {msg}\n")
+
+
+def main():
+    args = set(sys.argv[1:])
+    cfg = load_config()
+    dry = "--dry-run" in args
+    if "--test" in args:
+        send_dm(*discord_creds(cfg), "✅ Personal Agent reminders are connected.")
+        print("test sent"); return
+
+    state = json.loads(STATE.read_text()) if STATE.exists() else {}
+    now_home = datetime.now(ZoneInfo(HOME_TZ))
+    today = now_home.astimezone(local_tz(now_home.date())).date()
+    tz_now = local_tz(today)
+    now = datetime.now(tz_now)
+
+    if "--briefing" in args:
+        text = build_briefing(now.date() + timedelta(days=1), cfg)
+        if dry: print(text)
+        else: send_dm(*discord_creds(cfg), text); print("briefing sent")
+        return
+
+    # 1) due reminders
+    due = []
+    for r in yaml.safe_load(REMINDERS.read_text()) or []:
+        occ = occurrence_due(r, now)
+        if occ and state.get(r["id"]) != occ.isoformat():
+            due.append((r, occ))
+    # 2) nightly briefing (once per local date, from 21:00 until 23:59)
+    brief_due = now.hour >= BRIEFING_HOUR and state.get("_briefing") != now.date().isoformat()
+
+    if dry:
+        for r, occ in due: print("REMINDER", r["id"], occ)
+        if brief_due: print(build_briefing(now.date() + timedelta(days=1), cfg))
+        if not due and not brief_due: print("nothing due")
+        return
+    if not due and not brief_due:
+        return
+    token, user = discord_creds(cfg)
+    for r, occ in due:
+        late = now - occ > timedelta(minutes=30)
+        text = ("⏰ " + r["text"]) if not late else f"⏰ (late — was due {occ:%a %-d %b %H:%M}) {r['text']}"
+        try:
+            send_dm(token, user, text)
+            state[r["id"]] = occ.isoformat(); log(f"sent {r['id']}")
+        except Exception as e:
+            log(f"FAILED {r['id']}: {e}")
+    if brief_due:
+        try:
+            send_dm(token, user, build_briefing(now.date() + timedelta(days=1), cfg))
+            state["_briefing"] = now.date().isoformat(); log("sent briefing")
+        except Exception as e:
+            log(f"FAILED briefing: {e}")
+    STATE.write_text(json.dumps(state, indent=2))
+
+
+if __name__ == "__main__":
+    main()

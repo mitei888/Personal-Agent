@@ -1,0 +1,23 @@
+Travel_Agent/Personal_Files
+.agent.env
+.DS_Store
+.idea/
+.env
+
+# --- private documents: never commit (copy to the mini by AirDrop/USB) ---
+Santa Monica Tax/
+Travel_Agent/*.pdf
+Travel_Agent/*.jpg
+Travel_Agent/*.jpeg
+Travel_Agent/*.png
+Travel_Agent/*.heic
+Travel_Agent/*.HEIC
+*.env
+
+# --- per-machine state / generated files ---
+.reminders_state.json
+tools/remind.log
+tools/remind.err
+__pycache__/
+*.pyc
+.claude/settings.local.json
