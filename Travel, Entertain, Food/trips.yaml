@@ -1,0 +1,31 @@
+# All trips — the single source of truth. Read by the travel agent, tools/remind.py
+# (time zone + 9 pm briefing follow `tz` while you're away) and tools/adele_check.py (skips away days).
+#
+# id:          short unique id, e.g. sg-2027-03
+# name:        human name
+# type:        personal | work
+# status:      idea | planning | booked | done
+# start / end: YYYY-MM-DD (first and last day away from Hong Kong)
+# tz:          IANA time zone at the destination (e.g. Asia/Tokyo, Asia/Singapore, Asia/Taipei)
+# countries:   ISO codes
+# travellers:  [Miranda, Stanley]
+# activities:  optional — hiking | beach | snowboarding | climbing … (picks extra packing sections)
+# folder:      Trips/<folder name>
+# entry_check: date the visa / entry-requirement check was last done (YYYY-MM-DD), or null
+# stays:       optional list of {name, from, to, ref}
+
+- id: japan-nye-2026
+  name: Japan New Year (Tokyo + Kusatsu)
+  type: personal
+  status: planning
+  start: 2026-12-30
+  end: 2027-01-04
+  tz: Asia/Tokyo
+  countries: [JP]
+  travellers: [Miranda, Stanley]
+  activities: [climbing, hiking]
+  folder: "Trips/2026-12 Japan NYE"
+  entry_check: null
+  stays:
+    - {name: Soho House Tokyo, from: 2026-12-30, to: 2027-01-02}
+    - {name: 炯-kei- Kusatsu, from: 2027-01-02, to: 2027-01-04, ref: "202611080004891"}

@@ -24,7 +24,7 @@ python3 -m pip install --user pyyaml icalendar recurring-ical-events
 | From MacBook | To mini (same place) |
 |---|---|
 | `~/Personal_Agent/.env`, `~/Personal_Agent/.agent.env` | same |
-| `~/Personal_Agent/Travel_Agent/.env`, `Travel_Agent/Personal_Files/` | same |
+| `~/Personal_Agent/Travel, Entertain, Food/.env`, `Travel, Entertain, Food/Personal_Files/` | same |
 | `~/Personal_Agent/Santa Monica Tax/` | same |
 | `~/.claude/channels/discord/` (bot token + pairing/allowlist) | same — keeps you paired, no new code |
 | `~/.claude/projects/-Users-<you>-Personal-Agent/memory/` | same folder name on the mini (`<you>` = mini username) |

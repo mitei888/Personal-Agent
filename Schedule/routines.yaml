@@ -1,0 +1,16 @@
+# Recurring routines the schedule agent watches. Read by tools/adele_check.py.
+
+adele:
+  title: "Adele {n}/{total}"     # e.g. "Adele 4/8"
+  total: 8                       # package size; numbering runs 1/8 .. 8/8 then restarts at 1/8
+  duration_min: 60
+  slots:                         # usual weekly slots (Asia/Hong_Kong)
+    - {weekday: Mon, time: "09:00"}
+    - {weekday: Fri, time: "12:30"}
+  check: {weekday: Fri, time: "20:00"}   # Friday night: look at NEXT week (Mon–Sun)
+  sources: [icloud_cal, work_cal] # .env keys of calendar feeds to read (history in iCloud, new sessions in Google)
+  write_to: miranda@ferrettocap.com  # Google calendar Bob adds new sessions to (after Miranda confirms)
+
+# Trips are read automatically from "Travel, Entertain, Food/trips.yaml" (any status except idea).
+# Add other days away from Hong Kong here, e.g.  - {from: "2027-02-10", to: "2027-02-12", note: "Shenzhen"}
+away: []

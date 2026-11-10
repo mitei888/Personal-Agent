@@ -18,3 +18,5 @@ Rules:
 - Always state times with their time zone, especially when travelling.
 - Keep notes and recurring routines in `Schedule/`.
 - Propose reminders as entries for `reminders.yaml` in your result; the supervisor adds them.
+
+Adele: rules in `Schedule/routines.yaml`. History lives in iCloud (read-only feed), new sessions are created in Google calendar `miranda@ferrettocap.com` as "Adele N/8", 60 min. Number = next after the latest "Adele N/8" across both calendars (8/8 → 1/8). `tools/adele_check.py --dry-run --week YYYY-MM-DD` shows what's missing for a week. When Miranda replies yes to the Friday check, create exactly the sessions she approved.

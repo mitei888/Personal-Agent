@@ -40,15 +40,4 @@ Hours marked (LY) are last year's New Year hours — re-check ~Dec 20.
 - Bus Kusatsu → Karuizawa, Hokuriku Shinkansen → Tokyo (tickets on sale **Dec 4**)
 - Evening flight HND → HKG: **not booked yet**
 
-## Bookings
-| Item | Status |
-|---|---|
-| Soho House Tokyo Dec 30–Jan 2 | ✅ booked |
-| 炯-kei- Kusatsu Jan 2–4, room B-01, breakfast, ¥211,200 pay at hotel (ref 202611080004891) | ✅ booked — free cancel until ~Dec 25 |
-| Flights HKG ⇄ HND | ❌ to do |
-| Trains Jan 2 / Jan 4 | ⏳ on sale Dec 2 / Dec 4 |
-| Aman Lounge Jan 1 12:30 | ⏳ email / book when menu posted |
-| Butagumi Dec 30 dinner | ❌ to do |
-| Ramen-ya Shima Dec 31 | ⏳ book Dec 30 08:00 JST |
-| Kusatsu dinners Jan 2–3 | ❌ ask Kei |
-| Visit Japan Web (both) | ❌ ~1 week before |
+Bookings, refs and deadlines: see `bookings.md`. Research and options considered: `notes.md`.

@@ -21,7 +21,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 REMINDERS = ROOT / "reminders.yaml"
-TRIPS = ROOT / "Travel_Agent" / "trips.yaml"
+TRIPS = ROOT / "Travel, Entertain, Food" / "trips.yaml"
 STATE = ROOT / ".reminders_state.json"
 LOG = ROOT / "tools" / "remind.log"
 HOME_TZ = "Asia/Hong_Kong"
@@ -211,6 +211,32 @@ def dedupe(events, prefer=("Work",)):
     return kept
 
 
+def itinerary_for(trip, day):
+    """Lines of the trip's itinerary.md section for `day` (heading like '## Wed 30 Dec — …').
+    Times in the itinerary are local to the destination, same as the briefing."""
+    folder = trip.get("folder")
+    if not folder:
+        return []
+    path = TRIPS.parent / folder / "itinerary.md"
+    try:
+        text = path.read_text()
+    except FileNotFoundError:
+        return []
+    out, inside = [], False
+    head = re.compile(rf"^##\s+{day:%a}\w*\s+0?{day.day}\s+{day:%b}\w*\b", re.I)
+    for line in text.splitlines():
+        if line.startswith("## "):
+            if inside:
+                break
+            inside = bool(head.match(line))
+            if inside:
+                out.append(f"_{line[3:].split('—', 1)[-1].strip()}_")
+            continue
+        if inside and line.strip():
+            out.append(line.rstrip())
+    return out
+
+
 def build_briefing(day, cfg):
     tz = local_tz(day)
     events, errors = fetch_events(calendars(cfg), day, tz)
@@ -220,6 +246,10 @@ def build_briefing(day, cfg):
     lines = [f"🌙 **Tomorrow — {day:%a %-d %b}**" + ("" if tz.key == HOME_TZ else f"  _(times in {tz.key.split('/')[-1]})_")]
     for t in trips_on(day):
         lines.append(f"✈️ {t['name']}")
+        plan = itinerary_for(t, day)
+        if plan:
+            lines.append("\n**🗺 Itinerary**")
+            lines.extend(plan)
     by_cal = {}
     for ev in events:
         by_cal.setdefault(ev["cal"], []).append(ev)

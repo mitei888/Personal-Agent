@@ -21,11 +21,12 @@ import os
 import asyncio
 import httpx
 from datetime import datetime, timedelta
-from Travel_Agent.Travel_Info import carrier_preference, select_three_options, primary_carrier, CLASS_MAP
+from Travel_Info import carrier_preference, select_three_options, primary_carrier, CLASS_MAP
 from dotenv import load_dotenv
+from pathlib import Path
 
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parents[2] / "Travel, Entertain, Food" / ".env")
 
 SERPAPI_KEY = os.getenv("serp_api")
 SERPAPI_BASE = "https://serpapi.com/search"

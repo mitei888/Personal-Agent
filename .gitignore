@@ -1,4 +1,3 @@
-Travel_Agent/Personal_Files
 .agent.env
 .DS_Store
 .idea/
@@ -6,12 +5,13 @@ Travel_Agent/Personal_Files
 
 # --- private documents: never commit (copy to the mini by AirDrop/USB) ---
 Santa Monica Tax/
-Travel_Agent/*.pdf
-Travel_Agent/*.jpg
-Travel_Agent/*.jpeg
-Travel_Agent/*.png
-Travel_Agent/*.heic
-Travel_Agent/*.HEIC
+**/Personal_Files/
+Travel, Entertain, Food/**/*.pdf
+Travel, Entertain, Food/**/*.jpg
+Travel, Entertain, Food/**/*.jpeg
+Travel, Entertain, Food/**/*.png
+Travel, Entertain, Food/**/*.heic
+Travel, Entertain, Food/**/*.HEIC
 *.env
 
 # --- per-machine state / generated files ---
@@ -22,3 +22,10 @@ tools/bob.log
 __pycache__/
 *.pyc
 .claude/settings.local.json
+
+# --- per-machine logs ---
+tools/calendar_audit.log
+tools/adele.err
+tools/schedwatch.log
+tools/bobwatch.log
+.bob_config_hash
