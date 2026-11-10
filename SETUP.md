@@ -46,10 +46,13 @@ cd ~/Personal_Agent && claude
 ```
 ~/Personal_Agent/tools/install_schedule.sh
 cd ~/Personal_Agent && python3 tools/remind.py --test     # should DM you "connected"
-tmux new -A -s bob
-claude --channels plugin:discord@claude-plugins-official
-# detach: Ctrl+B then D   ·   re-attach later: tmux attach -t bob
+~/Personal_Agent/tools/install_bob.sh    # starts Bob in tmux now + at every login
+# attach: tmux attach -t bob   ·   detach: Ctrl+B then D   ·   log: tools/bob.log
+# remove autostart: tools/install_bob.sh off
+# manual start instead:  tmux new -A -s bob  then  claude --channels plugin:discord@claude-plugins-official
 ```
+For unattended restarts after a power cut, turn on **automatic login**
+(System Settings → Users & Groups; needs FileVault off) — the job runs at login.
 
 ## 7. Mini settings
 - System Settings → General → Sharing → **Remote Login** on (only your user)

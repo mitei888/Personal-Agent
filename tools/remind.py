@@ -26,6 +26,9 @@ STATE = ROOT / ".reminders_state.json"
 LOG = ROOT / "tools" / "remind.log"
 HOME_TZ = "Asia/Hong_Kong"
 BRIEFING_HOUR = 21          # 9 pm local
+# Events only worth showing while Miranda is in North America (per trips.yaml tz).
+NORTH_AMERICA_ONLY = [r"\bavos\s+ama\b"]
+NORTH_AMERICA_TZ = ("America/", "US/", "Canada/")
 API = "https://discord.com/api/v10"
 
 
@@ -65,6 +68,8 @@ def calendars(cfg):
     cals = []
     for k, v in cfg.items():
         m = re.fullmatch(r"GCAL_(\w+)_ICS", k) or re.fullmatch(r"(\w+?)_cal", k, re.I)
+        if m and v.startswith("webcal://"):        # iCloud public calendar links
+            v = "https://" + v[len("webcal://"):]
         if m and v.startswith("https://"):
             cals.append((m.group(1).replace("_", " ").title(), v))
     return sorted(cals)
@@ -178,9 +183,40 @@ def fetch_events(cals, day, tz):
     return out, errors
 
 
+_STOP = {"the", "a", "an", "and", "with", "for", "of", "re", "to", "at", "on", "in",
+         "meeting", "call", "catch", "up", "catchup", "microsoft", "teams", "zoom"}
+
+
+def _words(title):
+    return {w for w in re.findall(r"[a-z0-9]+", title.lower()) if w not in _STOP and len(w) > 1}
+
+
+def _same_event(a, b):
+    """Same event copied onto two calendars: same start time and similar title."""
+    if a["allday"] != b["allday"] or a["start"] != b["start"]:
+        return False
+    wa, wb = _words(a["title"]), _words(b["title"])
+    if not wa or not wb:
+        return a["title"].strip().lower() == b["title"].strip().lower()
+    return wa <= wb or wb <= wa or len(wa & wb) / len(wa | wb) >= 0.5
+
+
+def dedupe(events, prefer=("Work",)):
+    """Keep one copy of events that appear on several calendars (preferred calendar wins)."""
+    rank = lambda e: (prefer.index(e["cal"]) if e["cal"] in prefer else len(prefer), -len(e["loc"]))
+    kept = []
+    for ev in sorted(events, key=rank):
+        if not any(_same_event(ev, k) for k in kept):
+            kept.append(ev)
+    return kept
+
+
 def build_briefing(day, cfg):
     tz = local_tz(day)
     events, errors = fetch_events(calendars(cfg), day, tz)
+    events = dedupe(events)
+    if not tz.key.startswith(NORTH_AMERICA_TZ):
+        events = [e for e in events if not any(re.search(p, e["title"], re.I) for p in NORTH_AMERICA_ONLY)]
     lines = [f"🌙 **Tomorrow — {day:%a %-d %b}**" + ("" if tz.key == HOME_TZ else f"  _(times in {tz.key.split('/')[-1]})_")]
     for t in trips_on(day):
         lines.append(f"✈️ {t['name']}")

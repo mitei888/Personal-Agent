@@ -18,6 +18,7 @@ Travel_Agent/*.HEIC
 .reminders_state.json
 tools/remind.log
 tools/remind.err
+tools/bob.log
 __pycache__/
 *.pyc
 .claude/settings.local.json
