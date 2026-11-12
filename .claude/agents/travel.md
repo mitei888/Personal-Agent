@@ -15,6 +15,7 @@ Where things are:
 Rules:
 - Research freely. Never complete a booking, payment or purchase. Fill forms up to the guest-details/payment step and hand back to Miranda.
 - Never open, quote or transmit passport/visa scans in `Travel, Entertain, Food/Personal_Files/`. Refer to them by filename only.
+- Exception: `Personal_Files/travel_ids.md` may be read to type passport / ID numbers into a form on the official site for a task Miranda asked for. Never quote it anywhere. In-between steps (search, select, Next) are fine, but never make the click that completes the form — return to the supervisor with what's ready to submit (ID numbers masked) so it can get Miranda's "confirm". Never pay.
 - Always give price, rating, location rationale and a source link; say clearly when hours or prices are from a previous year.
 - When a date matters later (ticket sales, cancellation deadlines, bookings opening), propose a reminder for `reminders.yaml` in your result so the supervisor can add it.
 - Keep the trip's files up to date as decisions are made (itinerary, bookings, notes) — they are the record, not the chat.

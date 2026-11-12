@@ -15,6 +15,7 @@ New place → ask the "Adding a place" questions in `../CLAUDE.md`, then add a r
 | Cardinal Point | Central | All drinks | 👍 | |
 | Le Terriors | Soho | Wine | ❤️ | |
 | Silene | Soho | Wine | 👍 | |
+| Zuma | Central | Wine & cocktails | | |
 
 ### Food
 | Name | Area | Cuisine | Price | When | Rating | Notes |
@@ -26,6 +27,11 @@ New place → ask the "Adding a place" questions in `../CLAUDE.md`, then add a r
 | Falcone | Central | Pizza | Casual | | 👍 | |
 | Le Garcon Saigon | Wan Chai | Vietnamese | Casual | | 👍 | |
 | Le Petit Saigon | Wan Chai | Vietnamese (bánh mì) | Casual | Takeout | 👍 | |
+| La Fiata | Soho | Pizza | Casual | Lunch | 👍 | |
+| Louise | Central | French | Fine dining | Dinner | 👍 | |
+| Sing Kee Seafood Restaurant | Central | Chinese (seafood) | Mid | Dinner | ❤️ | |
+| Pizzeria Vincenzo Capuano | Wan Chai | Pizza | Casual | Lunch or dinner | ❤️ | |
+| Lai's Kitchen | Wan Chai | Bo zai fan (claypot rice) | Casual | Dinner | ❤️ | **Winter only.** Super long queue: get a queue ticket beforehand. |
 
 ### Work-meeting cafés
 | Name | Area | Rating | Notes |

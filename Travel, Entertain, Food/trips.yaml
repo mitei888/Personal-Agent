@@ -13,6 +13,26 @@
 # folder:      Trips/<folder name>
 # entry_check: date the visa / entry-requirement check was last done (YYYY-MM-DD), or null
 # stays:       optional list of {name, from, to, ref}
+# places:      optional list of {name, region, from, to}: towns for the 9 am pre-trip weather DM
+#              (sent the day before `start`). Without it the trip `name` is used, so give
+#              multi-city trips or ambiguous towns (region = prefecture/state) a places list.
+
+- id: singapore-2026-11
+  name: Singapore
+  type: work
+  status: booked
+  start: 2026-11-16
+  end: 2026-11-18
+  tz: Asia/Singapore
+  countries: [SG]
+  travellers: [Miranda]
+  folder: null
+  entry_check: null
+  flights:
+    - {flight: CX 791, date: 2026-11-16, route: HKG-SIN, dep: "12:50", arr: "16:50", ref: 5C5ASC}
+    - {flight: CX 734, date: 2026-11-18, route: SIN-HKG, dep: "16:45", arr: "20:40", ref: 5C5ASC}
+  stays:
+    - {name: Grand Park City Hall, from: 2026-11-16, to: 2026-11-18}
 
 - id: japan-nye-2026
   name: Japan New Year (Tokyo + Kusatsu)
@@ -21,6 +41,9 @@
   start: 2026-12-30
   end: 2027-01-04
   tz: Asia/Tokyo
+  places:   # for the pre-trip weather forecast
+    - {name: Tokyo, from: 2026-12-30, to: 2027-01-02}
+    - {name: Kusatsu, region: Gunma, from: 2027-01-02, to: 2027-01-04}
   countries: [JP]
   travellers: [Miranda, Stanley]
   activities: [climbing, hiking]
@@ -29,3 +52,24 @@
   stays:
     - {name: Soho House Tokyo, from: 2026-12-30, to: 2027-01-02}
     - {name: 炯-kei- Kusatsu, from: 2027-01-02, to: 2027-01-04, ref: "202611080004891"}
+
+- id: taipei-2026-11
+  name: Taipei
+  type: personal
+  status: booked
+  start: 2026-11-20
+  end: 2026-11-23
+  tz: Asia/Taipei
+  countries: [TW]
+  travellers: [Miranda]
+  places:   # for the pre-trip weather forecast
+    - {name: Taipei, from: 2026-11-20, to: 2026-11-22}
+    - {name: Jiaoxi, region: Yilan, from: 2026-11-22, to: 2026-11-23}
+  folder: "Trips/2026-11 Taipei"
+  entry_check: null
+  stays:   # from iCloud calendar; 22 Nov overlaps, Jiaoxi runs to 24 Nov (asked Miranda)
+    - {name: Madison Taipei, from: 2026-11-20, to: 2026-11-23}
+    - {name: MU Jiaoxi Hotel, from: 2026-11-22, to: 2026-11-24}
+  flights:
+    - {flight: CX 530, date: 2026-11-20, route: HKG-TPE, dep: "09:05", arr: "10:50", ref: E2I9UF}
+    - {flight: CX 473, date: 2026-11-23, route: TPE-HKG, dep: "18:40", arr: "20:45", ref: E2I9UF}

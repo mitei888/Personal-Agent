@@ -5,7 +5,11 @@ How Bob builds a trip's list (~2 days before departure, or when asked):
 2. **+ Season** — from the destination's forecast for the trip dates (not the calendar season at home).
 3. **+ Trip type / activities** — from `trips.yaml` (`type: work`, `activities: [...]`).
 4. **+ Pre-trip checks** — do these well before packing day.
-Send it grouped by section, phone-friendly, and add anything trip-specific (e.g. onsen, NYE outfit, formal dinner).
+Add anything trip-specific (e.g. onsen, NYE outfit, formal dinner).
+5. **Deliver it as a tickable web checklist** (Miranda's choice, 2026-11-11): copy `packing_checklist_template.html`,
+   change the title/subtitle/forecast line, the `DATA` list and the `KEY` (one per trip), publish it as a
+   private Artifact and DM her the link. Ticks are kept in her phone's browser only.
+   It's temporary: delete the artifact when she says she's done packing.
 
 Converted from `packing list.xlsx` (Nov 2026). This file is now the master — edit here.
 

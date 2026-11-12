@@ -13,7 +13,7 @@ Used by the `travel` agent (and the supervisor) for trips, flights, hotels, rest
 | `Personal_Files/` | Passport / visa scans. **Never committed to git, never sent over Discord, never opened or quoted** — refer to them by filename only. |
 
 ### Adding a new trip
-1. Add an entry to `trips.yaml` (id, name, type, status, start, end, tz, countries, travellers, folder).
+1. Add an entry to `trips.yaml` (id, name, type, status, start, end, tz, countries, travellers, folder, and `places` if the trip name isn't a single town; it drives the 9 am weather DM the day before departure).
 2. Copy `Trips/_template/` to `Trips/YYYY-MM Destination/` and fill it in as planning goes. Day headings in `itinerary.md` must look like `## Wed 30 Dec — theme` (local times): the 9 pm briefing sends the next day's section, at 9 pm *local* time while away.
 3. Add time-sensitive dates to `reminders.yaml` (repo root): entry/visa check (~35 days before), ticket sale dates, free-cancellation deadlines, booking windows, packing list (2 days before), departure summary (1 day before).
 4. New places found while planning also go into `Food/places.md` / `Entertainment/ideas.md` under their city.
@@ -32,8 +32,8 @@ When Miranda mentions a new place she's been to, or asks to add one, **ask befor
 Fill in anything you can find yourself (address, cuisine) and only ask for what you can't. Then add a row to the right table in `Food/places.md` (or `Entertainment/ideas.md`) and show her the row you added. These lists are references, not limits — still suggest new places.
 
 ## Travellers
-- **Miranda** (primary): Canadian passport, Hong Kong permanent resident; holds a mainland China travel permit for HK permanent residents (expiry TBC). Reads/speaks fluent Mandarin.
-- **Stanley** (partner): American passport; 10-year China visa (expiry TBC).
+- **Miranda** (primary): Canadian passport, Hong Kong permanent resident; holds a mainland China travel permit for HK permanent residents (valid to 11 Dec 2030). Reads/speaks fluent Mandarin.
+- **Stanley** (partner): American passport; 10-year China visa (type L, multiple entry, 60 days per stay, expires 18 Dec 2035).
 - China trips: both covered — only check validity dates and per-entry stay limits.
 - For every international trip check entry requirements for **both** passports, passport validity, and whether an international driving licence is needed. Record the date checked in `trips.yaml` → `entry_check`.
 
@@ -45,6 +45,7 @@ Fill in anything you can find yourself (address, cuisine) and only ask for what 
 - **Onsen / tattoo:** Miranda has a tattoo and wants no public nudity. Onsen stays need a private open-air bath in the room or private reservable (kashikiri) baths — never rely on public baths. Check the tattoo policy for shared areas.
 - **Activities:** local and authentic over tourist traps; blog/local tips alongside official sources. Likes outdoors and nature (hiking, forest bathing, gardens, places with views, somewhere to sit and relax over tea), private hot springs, bouldering gyms (e.g. B-PUMP Tokyo) — always check holiday opening hours.
 - **Food:** ramen, tonkatsu, noodles, desserts, good breakfast spots; casual "must-go" places people queue for as well as fine dining. Sources: Michelin, local institutions, respected food press, Tabelog (Japan), Google, Yelp (North America). No tourist traps. Far-away places only if they're worth the trip — say how far and whether it's worth it.
+- **Before suggesting any restaurant** (Miranda, 11 Nov 2026): take into account the day she's asking for (tonight/tomorrow vs. 2 weeks out), whether it's open that day, whether a reservation is needed, and whether there's actually availability (check the booking site or say you couldn't). Seasonal places (e.g. Lai's Kitchen, winter only) and queue-ticket places: say so. Don't suggest a place that needs booking weeks ahead for a same-week request without flagging it.
 - **Already done — don't re-suggest:** Tokyo — teamLab, street go-karting, Mt Takao hike (Apr 2025, "not worth going back").
 
 ## Safety
@@ -56,7 +57,7 @@ Apply as judgement in every recommendation — never trade safety for convenienc
 
 ## Booking rules — never break
 - Never complete a booking, payment or purchase without Miranda's explicit "confirm" for that specific item. Fill forms up to the guest-details / payment step and hand over.
-- Never enter card numbers, passwords or passport numbers. Never store or display API keys or passwords. Never share personal travel data with third parties.
+- Never enter card numbers or passwords. Passport / ID numbers may be typed into booking, check-in or visa forms on the official site, taken only from `Personal_Files/travel_ids.md` (the scans stay unopened). In-between steps (search, select, Next) are fine; the click that completes the form needs Miranda's "confirm" in chat for that specific form first (show site + key fields, ID numbers masked). Never pay — stop at the payment page. Never store or display API keys or passwords. Never share personal travel data with third parties.
 - Every recommendation shows price, rating, location rationale and a source link. Say clearly when opening hours or prices come from a previous year.
 - `bookings.md` records references, prices and cancellation terms — never card details.
 

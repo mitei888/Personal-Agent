@@ -29,3 +29,10 @@ tools/adele.err
 tools/schedwatch.log
 tools/bobwatch.log
 .bob_config_hash
+
+# --- Bob watchdog state ---
+tools/.bob_restarts*
+tools/.bob_gave_up
+tools/.bob_pause
+tools/.bob_stuck_notified
+tools/.bob_refreshed_date

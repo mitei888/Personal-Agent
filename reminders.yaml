@@ -31,3 +31,21 @@
   at: "2026-12-30 07:55"
   tz: Asia/Tokyo
   text: "🍜 Book Ramen-ya Shima for tomorrow — next-day slots open at 08:00 Japan time on TableCheck. Cash only."
+
+- id: taipei-packing
+  at: "2026-11-18 20:00"
+  text: "🧳 Taipei on Fri: time to pack (Economy Light = 1 checked bag, 23kg). Want a packing checklist?"
+
+- id: taipei-departure
+  at: "2026-11-19 20:00"
+  text: "✈️ Tomorrow: CX530 HKG 09:05 → TPE 10:50 (ref E2I9UF). Online check-in is open; pick your free seat there. Return Mon 23 Nov CX473 TPE 18:40."
+
+- id: taipei-webinar-morning
+  at: "2026-11-23 09:00"
+  tz: Asia/Taipei
+  text: "💻 Today 12:00–14:00: Confirmation of Enrolment and Payment webinar (報名及付款確認). Sort out good wifi + charger. Leave for the airport ~14:00 (CX473 18:40)."
+
+- id: taipei-webinar-start
+  at: "2026-11-23 11:45"
+  tz: Asia/Taipei
+  text: "⏰ Webinar starts in 15 min (12:00–14:00). Bags packed so you can leave for the airport at ~14:00."

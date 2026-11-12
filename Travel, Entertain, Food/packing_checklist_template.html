@@ -1,0 +1,97 @@
+<title>Singapore Packing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* Layout: single phone-first column; sticky progress bar; sections as plain groups, checked rows fade */
+:root{
+  --bg:#f6f8f7; --surface:#ffffff; --fg:#17201d; --muted:#5d6b66; --line:#dde5e2;
+  --accent:#0f7a6b; --accent-soft:#e1f1ee; --done:#9aa8a3;
+  --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1513; --surface:#17201d; --fg:#e7eeeb; --muted:#9aaba5; --line:#26322e;
+  --accent:#4cc3ad; --accent-soft:#163430; --done:#5f6e69; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1513; --surface:#17201d; --fg:#e7eeeb; --muted:#9aaba5; --line:#26322e;
+  --accent:#4cc3ad; --accent-soft:#163430; --done:#5f6e69; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+h1{font-family:var(--display);font-weight:600;font-size:1.6rem;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.wx{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:var(--accent-soft);font-size:.92rem}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:12px;margin-top:8px;z-index:5;display:flex;align-items:center;gap:12px}
+.track{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);transition:width .2s}
+.count{font-variant-numeric:tabular-nums;font-weight:600;font-size:.9rem;min-width:4.5em;text-align:right}
+section{margin-top:18px}
+h2{font-family:var(--display);font-weight:500;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 6px}
+ul{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+li+li{border-top:1px solid var(--line)}
+label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;cursor:pointer;min-height:24px}
+input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--accent)}
+input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.t{min-width:0}
+.note{display:block;color:var(--muted);font-size:.85rem}
+input:checked+.t{color:var(--done);text-decoration:line-through}
+.done-all{display:none;margin-top:18px;text-align:center;font-weight:600;color:var(--accent)}
+.done-all.on{display:block}
+button{margin-top:24px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--accent)}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+
+<div class="wrap">
+  <h1>Singapore Packing</h1>
+  <p class="sub">Work trip · Mon 16 – Wed 18 Nov · CX 791 out, CX 734 back</p>
+  <p class="wx">Forecast: 23–30°C, humid, showers or thunderstorms likely every day (95%+). Summer clothes, plus a layer for air-con.</p>
+  <div class="bar"><div class="track"><div class="fill" id="fill"></div></div><span class="count" id="count">0 / 0</span></div>
+  <div id="list"></div>
+  <p class="done-all" id="doneAll">All packed. Have a good trip ✈️</p>
+  <button id="reset" type="button">Untick everything</button>
+</div>
+
+<script>
+const DATA=[
+ ["Docs & money",[["Passport"],["SGD cash"],["SG Arrival Card","Fill in online from Fri 13 Nov (within 3 days of arrival)"]]],
+ ["Work",[["Laptop + charger"],["Screens"],["Mouse / keyboard"],["Notebook"],["Name cards"],["Blazer","For meetings and air-con"]]],
+ ["Tech",[["Phone charger"],["Apple Watch charger"],["Battery pack"]]],
+ ["Clothes",[["Light work tops"],["Long-sleeve shirts"],["Jeans"],["Nice shorts"],["T-shirts"],["Nice top for dinner","Chen Hao, Tue 17"],["Light scarf / shawl","For air-con"],["Underwear"],["Socks"],["Bras"],["Pyjamas + night bras"],["Flip-flops"],["Bikini","Hotel pool"]]],
+ ["Rain",[["Compact umbrella"],["Rain-friendly shoes"]]],
+ ["Accessories",[["Jewellery"],["Watch"],["Sunglasses"]]],
+ ["Toiletries & skincare",[["Face cream, toner, serum"],["SPF"],["Face wash"],["Chapstick"],["Body lotion"],["Shampoo + conditioner"],["Hair cream"],["Hairbrush"],["Hair ties + clips"],["Makeup"],["Nail file + clipper"],["Tweezers"],["Toothbrush, toothpaste, floss"],["Pantyliners"]]],
+ ["Health & sleep",[["HRT"],["Vitamins"],["Eye mask"]]]
+];
+const KEY="sg-packing-2026-11";
+let ticked={};
+try{ticked=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){ticked={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ticked))}catch(e){}};
+const list=document.getElementById("list");
+let n=0;
+DATA.forEach(([sec,items])=>{
+  const s=document.createElement("section");
+  const h=document.createElement("h2");h.textContent=sec;s.appendChild(h);
+  const ul=document.createElement("ul");
+  items.forEach(([name,note])=>{
+    const id="i"+(n++);
+    const li=document.createElement("li");
+    li.innerHTML=`<label for="${id}"><input type="checkbox" id="${id}"><span class="t"></span></label>`;
+    const t=li.querySelector(".t");t.textContent=name;
+    if(note){const sm=document.createElement("span");sm.className="note";sm.textContent=note;t.appendChild(sm)}
+    const cb=li.querySelector("input");cb.checked=!!ticked[id];
+    cb.addEventListener("change",()=>{ticked[id]=cb.checked;save();update()});
+    ul.appendChild(li);
+  });
+  s.appendChild(ul);list.appendChild(s);
+});
+function update(){
+  const all=list.querySelectorAll("input"),done=list.querySelectorAll("input:checked").length;
+  document.getElementById("count").textContent=done+" / "+all.length;
+  document.getElementById("fill").style.width=(all.length?done/all.length*100:0)+"%";
+  document.getElementById("doneAll").classList.toggle("on",done===all.length);
+}
+document.getElementById("reset").addEventListener("click",()=>{
+  list.querySelectorAll("input").forEach(c=>c.checked=false);ticked={};save();update();
+});
+update();
+</script>
