@@ -62,6 +62,8 @@ For unattended restarts after a power cut, turn on **automatic login**
 - Keep 1Password locked / no auto-fill while Bob browses — Miranda logs in herself via Jump
 
 ## 8. Remote access from the iPhone (set up 11 Nov 2026)
+Bob is kept alive by `tools/start_bob.sh` (launchd watchdog, every 2 min) and gets a fresh conversation daily 04:00–06:59 her time (`tools/refresh_bob.sh`). Pause the watchdog: `touch tools/.bob_pause`.
+
 | Tool | Route | Use for |
 |---|---|---|
 | **Blink** (SSH) | Tailscale only | Talking to Bob, commands: `ssh bob` → `tmux attach -d -t bob` (detach: Ctrl-b, d) |
@@ -82,7 +84,13 @@ For unattended restarts after a power cut, turn on **automatic login**
 
 **Bob restart (correct way):** `tmux kill-session -t bob && ~/Personal_Agent/tools/start_bob.sh`. Never start plain `claude` in the bob window — without `--channels` Discord DMs don't arrive.
 
-**To do:** SSH key-only logins + macOS firewall on (the mini has a public IP on en0, SSH is on, firewall off); `brew install mosh`; remove stale Tailscale devices (`macbook-pro-5`, `mirandas-mac-mini`).
+**Open items (as of 12 Nov 2026):**
+1. **Push to GitHub** — commit `5aad077` (watchdog, daily refresh, form rules, this file) is local only.
+2. **Lock down SSH (most important)** — the mini has a public IP on en0, SSH is on, firewall off. Switch sshd to key-only (`PasswordAuthentication no`, `KbdInteractiveAuthentication no` in `/etc/ssh/sshd_config.d/`), turn on the macOS firewall. Needs Miranda's admin password; test `ssh bob` from Blink before closing the old session.
+3. **1Password extension** — turn OFF: Offer to fill and save in fields, Universal sign in, Autofocus sign in prompts, Sign in automatically after autofill, and all "Show … in autofill suggestions". Auto-lock ~5 min (app → Settings → Security).
+4. **Tailscale on the mini** — turn on "Launch at login" in its settings (it's in Login Items, but its own toggle read off).
+5. **Test "fresh start" on Discord** — check Bob can restart himself via `tools/refresh_bob.sh --now` (auto-mode may block it; the 04:00 daily refresh runs regardless).
+6. Optional: `brew install mosh` (then mosh on in Blink); remove stale Tailscale devices `macbook-pro-5`, `mirandas-mac-mini`; cancel NordVPN on the mini if not needed; add how the 4 extra travellers in `travel_ids.md` relate to Miranda (for "book for my parents").
 
 ## Day-to-day: editing on the MacBook
 1. Edit on the MacBook (don't run Bob or the schedule there) → `git commit` → `git push`
